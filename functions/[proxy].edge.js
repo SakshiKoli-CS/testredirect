@@ -1,7 +1,11 @@
 export default function handler(request, context) {
-  // Access environment variable from context (Cloudflare Workers style)
+  // Debug: Check what's in context.env
+  console.log("context.env:", context?.env);
+  console.log("ENVIRONMENT_NAME:", context?.env?.ENVIRONMENT_NAME);
+  
   const environmentName = context?.env?.ENVIRONMENT_NAME;
   
+  // Only apply in "test" environment
   if (environmentName !== "test") {
     return fetch(request);
   }

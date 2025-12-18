@@ -1,16 +1,12 @@
 export default function handler(request, context) {
-  // Debug: Check what's in context.env
-  console.log("context.env:", context?.env);
-  console.log("ENVIRONMENT_NAME:", context?.env?.ENVIRONMENT_NAME);
-  
-  const environmentName = context?.env?.ENVIRONMENT_NAME;
-  
+  const parsedUrl = new URL(request.url);
+  const hostname = parsedUrl.hostname;
+
   // Only apply in "test" environment
-  if (environmentName !== "test") {
+  if (hostname !== "testredirect-test.contentstackapps.com") {
     return fetch(request);
   }
 
-  const parsedUrl = new URL(request.url);
   const pathname = parsedUrl.pathname;
 
   if (pathname.includes('//')) {

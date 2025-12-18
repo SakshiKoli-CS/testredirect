@@ -1,23 +1,20 @@
 export default function handler(request, context) {
   const parsedUrl = new URL(request.url);
   const hostname = parsedUrl.hostname;
-
-  // Only apply in "test" environment
-  if (hostname !== "testredirect-test.contentstackapps.com") {
-    return fetch(request);
-  }
-
   const pathname = parsedUrl.pathname;
 
-  if (pathname.includes('//')) {
-    const normalizedPath = pathname.replace(/\/{2,}/g, '/');
-    parsedUrl.pathname = normalizedPath;
-    return Response.redirect(parsedUrl, 308);
-  }
+  // Only apply in "test" environment
+  if (hostname === "testredirect-test.contentstackapps.com") {
+    if (pathname.includes('//')) {
+      const normalizedPath = pathname.replace(/\/{2,}/g, '/');
+      parsedUrl.pathname = normalizedPath;
+      return Response.redirect(parsedUrl, 308);
+    }
 
-  if (pathname === '/contact') {
-    parsedUrl.pathname = '/about';
-    return Response.redirect(parsedUrl, 308);
+    if (pathname === '/contact') {
+      parsedUrl.pathname = '/about';
+      return Response.redirect(parsedUrl, 308);
+    }
   }
 
   return fetch(request);

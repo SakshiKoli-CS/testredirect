@@ -1,10 +1,10 @@
 export default function handler(request, context) {
   const parsedUrl = new URL(request.url);
-  const hostname = parsedUrl.hostname;
   const pathname = parsedUrl.pathname;
+  const environmentName = context?.env?.ENVIRONMENT_NAME;
 
   // Only apply in "test" environment
-  if (hostname === "testredirect-test.contentstackapps.com") {
+  if (environmentName === "test") {
     if (pathname.includes('//')) {
       const normalizedPath = pathname.replace(/\/{2,}/g, '/');
       parsedUrl.pathname = normalizedPath;

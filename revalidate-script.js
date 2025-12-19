@@ -1,8 +1,13 @@
 const https = require('https');
+const url = require('url');
 
 const REVALIDATION_URL = 'https://app.contentstack.com/automations-api/run/58412cf3b5f7443586550abeeb8077b4';
 const TOTAL_REQUESTS = 1000;
 const CONCURRENT_REQUESTS = 10;
+
+// Authentication
+const AUTH_KEY = 'ah-http-key';
+const AUTH_VALUE = 'S2_ylbwgsf';
 
 let successCount = 0;
 let failureCount = 0;
@@ -12,7 +17,17 @@ function makeRequest(requestNumber) {
   return new Promise((resolve) => {
     const startTime = Date.now();
     
-    const req = https.get(REVALIDATION_URL, (res) => {
+    const parsedUrl = new URL(REVALIDATION_URL);
+    const options = {
+      hostname: parsedUrl.hostname,
+      path: parsedUrl.pathname,
+      method: 'GET',
+      headers: {
+        [AUTH_KEY]: AUTH_VALUE
+      }
+    };
+    
+    const req = https.request(options, (res) => {
       let data = '';
       
       res.on('data', (chunk) => {
@@ -49,6 +64,8 @@ function makeRequest(requestNumber) {
       console.log('Request #' + requestNumber + ' - Timeout - Progress: ' + completedCount + '/' + TOTAL_REQUESTS);
       resolve({ success: false, error: 'timeout' });
     });
+    
+    req.end();
   });
 }
 
